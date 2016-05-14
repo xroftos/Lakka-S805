@@ -1,0 +1,23 @@
+diff -Naur retroarch.git/gfx/drivers_context/drm_ctx.c retroarch.patch/gfx/drivers_context/drm_ctx.c
+--- retroarch.git/gfx/drivers_context/drm_ctx.c	2016-04-08 12:00:23.808205458 +0200
++++ retroarch.patch/gfx/drivers_context/drm_ctx.c	2016-04-08 12:35:13.322971465 +0200
+@@ -324,7 +324,10 @@
+    drm_free();
+ 
+    if (g_drm_fd >= 0)
++   {
++      drmDropMaster(g_drm_fd);
+       filestream_close(drm->drm);
++   }
+ 
+    g_gbm_surface      = NULL;
+    g_gbm_dev          = NULL;
+@@ -420,6 +423,8 @@
+    drm->fb_width    = g_drm_connector->modes[0].hdisplay;
+    drm->fb_height   = g_drm_connector->modes[0].vdisplay;
+ 
++   drmSetMaster(g_drm_fd);
++
+    g_gbm_dev        = gbm_create_device(fd);
+ 
+    if (!g_gbm_dev)
